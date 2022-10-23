@@ -30,18 +30,29 @@ function onClickGallery() {
   gallery.addEventListener("click", function handleClick(evt) {
     evt.preventDefault();
     const url = evt.target.dataset.source;
-    const originalPicture = basicLightbox.create(`
+    const originalPicture = basicLightbox.create(
+      `
         <div class="modal">
             <img src="${url}">
         </div>
-    `);
+    `,
+      {
+        onShow: () => {
+          document.addEventListener("keydown", handleClose);
+        },
+        onClose: () => {
+          document.removeEventListener("keydown", handleClose);
+        },
+      }
+    );
 
-    originalPicture.show();
-    document.addEventListener("keydown", function handleClose(evt) {
+    function handleClose(evt) {
       if (evt.key === "Escape") {
         originalPicture.close();
       }
-    });
+    }
+
+    originalPicture.show();
   });
 }
 
